@@ -2,6 +2,7 @@ from django.db import models
 
 class Picture(models.Model):
 	pictureUrl = models.CharField(max_length = 250)
+
 	word = models.CharField(max_length = 30)
 
 	def __str__(self):
@@ -16,4 +17,5 @@ class Picture(models.Model):
 
 class Progress(models.Model):
 	curr = models.IntegerField()
-	max  = models.IntegerField() 
+	max_progress  = models.IntegerField() 
+
