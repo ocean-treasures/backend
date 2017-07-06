@@ -2,11 +2,37 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponse
 from .models import Picture
+import random
+from random import randint
 import json
 from django.views.decorators.csrf import csrf_exempt
 
 
+passed_words = []
+pic_ids = []
+pic = []
+start_game = False
+word_index = 0
+
 def get_response(request):
+    if start_game == False:
+        random_pictures()
+        global start_game 
+        start_game = True
+
+    print (pic_ids)
+    print (pic)
+
+    random_word_index()
+    pictures = [
+            {
+                "url": pic[word_index],
+                "id": pic_ids[word_index]
+            },
+            ]
+
+     #random.shuffle(pic)
+#TODO make json object 
 
     response = {'response': {
         "progress": {
@@ -14,27 +40,15 @@ def get_response(request):
             "max": 10
         },
         "word": {
-            "id": 6261,
-            "word": "banana"
+            "id": pic_ids[word_index],
+            "word": Picture.objects.get(id=pic_ids[word_index]).word
         },
-        "pictures": [
-            {
-                "url": "/media/6216.png",
-                "id": 4
-            },
-            {
-                "url": "/media/6414.png",
-                "id": 16
-            },
-            {
-                "url": "/media/1615.png",
-                "id": 75
-            },
-            {
-                "url": "/media/6215.png",
-                "id": 215
-            }]
+        "pictures": pictures
     }}
+
+
+
+
 
     return JsonResponse(response)
 
@@ -49,32 +63,32 @@ def check_answer(request):
     else:
         is_correct = False
 
+    # import ipdb; ipdb.set_trace()
 
-#TODO find word by id in Picture
+
     response = {'response': {
-        "word": "banana",
+        "word": Picture.objects.get(id = data['word_id']).word,
         "correct": is_correct
     }}
 
     return JsonResponse(response, safe=False)
 
+def random_pictures():
+    i = 0
+    while (i < 5):
+        rand = random.randint(0, 6)
+        if not rand in pic_ids:
+            pic_ids.append(rand)
+            pic.append(Picture.objects.all()[rand].pictureUrl)
+            i+=1
 
-
-def all(request):
-    #import ipdb; ipdb.set_trace()
-    pictures = Picture.objects.all()
-
-    response = {'response': {
-            "pictures": [
-                {
-                    "url": Picture.objects.all()[0].pictureUrl,
-                    "id": Picture.objects.all()[0].id
-                },
-                {
-                    "url": Picture.objects.all()[1].pictureUrl,
-                    "id": Picture.objects.all()[1].id
-                }
-            ] 
-    }}
-    #result = ['picture id: {}, picture word: {}\n '.format(p.id, p.word) for p in pictures]
-    return JsonResponse(response)
+def random_word_index():
+    while 1:
+        global word_index
+        word_index = random.randint(0, 4)
+        if len(passed_words) == 5:
+            global passed_words
+            passed_words = []
+        if not word_index in passed_words:
+            passed_words.append(word_index)   
+            break 
