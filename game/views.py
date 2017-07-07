@@ -7,6 +7,9 @@ import random
 from random import randint
 import json
 from django.views.decorators.csrf import csrf_exempt
+import sys
+sys.path.insert(0, r'/home/pi/ocean_motion')
+from pipi import move
 
 
 passed_words = []
@@ -14,6 +17,7 @@ pic_ids = []
 start_game = False
 word_index = 0
 current_progress = Progress.objects.get()
+motor_move = 6
 
 
 def get_response(request):
@@ -67,21 +71,23 @@ def get_response(request):
 
 @csrf_exempt
 def check_answer(request):
-    import ipdb; ipdb.set_trace()
+    #import ipdb; ipdb.set_trace()
     data = json.loads(request.body)
     if data['pic_id'] == data['word_id']:
         is_correct = True
         current_progress.curr += 1
+        move(motor_move)
     else:
         is_correct = False
         if not current_progress.curr == 0:
             current_progress.curr -= 1
+            move(-motor_move)
 
     # import ipdb; ipdb.set_trace()
     current_progress.save()
 
     response = {
-        "word": Picture.objects.get(id = data['word_id']).word,
+        "word": Picture.objects.get(id = data['pic_id']).word,
         "correct": is_correct,
         "progress": {
             "current": current_progress.curr,
