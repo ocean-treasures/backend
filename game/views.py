@@ -90,14 +90,14 @@ def check_answer(request):
     # import ipdb; ipdb.set_trace()
     current_progress.save()
 
-    response = {'response': {
+    response = {
         "word": Picture.objects.get(id = data['word_id']).word,
         "correct": is_correct,
         "progress": {
             "current": current_progress.curr,
             "max": current_progress.max_progress
         }
-    }}
+    }
 
     return JsonResponse(response, safe=False)
 
