@@ -7,9 +7,6 @@ import random
 from random import randint
 import json
 from django.views.decorators.csrf import csrf_exempt
-#import sys
-#sys.path.insert(0, r'/home/pi/ocean_motion')
-#from pipi import move
 
 
 passed_words = []
@@ -17,12 +14,7 @@ pic_ids = []
 start_game = False
 word_index = 0
 current_progress = Progress.objects.get()
-moving = 6
 
-
-#Check for empyt database
-#Change name of varaible with bad name
-#Check for end of game
 
 def get_response(request):
     if start_game == False:
@@ -40,6 +32,7 @@ def get_response(request):
             ]
 
     random.shuffle(pic_ids)
+    #TODO make json object 
     
     i = 0
     for i in range(0, len(pic_ids) - 1):
@@ -66,7 +59,7 @@ def get_response(request):
         },
         "pictures": pictures
         
-    }
+}
 
 
     return JsonResponse(response)
@@ -74,18 +67,15 @@ def get_response(request):
 
 @csrf_exempt
 def check_answer(request):
-    # import ipdb; ipdb.set_trace()
-    data = json.loads(request.POST.get('body'))
-
+    import ipdb; ipdb.set_trace()
+    data = json.loads(request.body)
     if data['pic_id'] == data['word_id']:
         is_correct = True
         current_progress.curr += 1
-        #move(moving)
     else:
         is_correct = False
         if not current_progress.curr == 0:
             current_progress.curr -= 1
-            #move(-moving)
 
     # import ipdb; ipdb.set_trace()
     current_progress.save()
@@ -107,7 +97,7 @@ def check_answer(request):
 def random_pictures():
     i = 0
     while (i < 5):
-        rand = random.randint(0, Picture.objects.count()-1)
+        rand = random.randint(0, 6)
         if not Picture.objects.all()[rand].id in pic_ids:
             pic_ids.append(Picture.objects.all()[rand].id)
             i+=1
