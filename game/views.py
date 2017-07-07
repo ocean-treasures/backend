@@ -83,7 +83,11 @@ def check_answer(request):
 
     response = {'response': {
         "word": Picture.objects.get(id = data['word_id']).word,
-        "correct": is_correct
+        "correct": is_correct,
+        "progress": {
+            "current": current_progress.curr,
+            "max": current_progress.max_progress
+        }
     }}
 
     return JsonResponse(response, safe=False)
