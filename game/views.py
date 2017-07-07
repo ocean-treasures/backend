@@ -48,7 +48,7 @@ def get_response(request):
 
     
     random.shuffle(pictures)
-    response = {'response': {
+    response = {
         "progress": {
             "current": current_progress.curr,
             "max": current_progress.max_progress
@@ -59,7 +59,7 @@ def get_response(request):
         },
         "pictures": pictures
         
-    }}
+    }
 
 
     return JsonResponse(response)
