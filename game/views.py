@@ -26,7 +26,7 @@ def get_response(request):
     correct_id = passed_words[len(passed_words)-1]
     pictures = [
             {
-                "url": Picture.objects.get(id=pic_ids[word_index]).pictureUrl,
+                "url": Picture.objects.get(id=correct_id).pictureUrl,
                 "id": correct_id
             },
             ]
