@@ -11,22 +11,26 @@ import sys
 sys.path.insert(0, r'/home/pi/ocean_motion')
 from pipi import move
 
+#import ipdb; ipdb.set_trace()
 
+start_game = False
 passed_words = []
 pic_ids = []
-start_game = False
 word_index = 0
 current_progress = Progress.objects.get()
 motor_move = 6
+question_number = Progress.objects.get(id = 1).max_progress
 
 
 def get_response(request):
+   
+    global start_game 
     if start_game == False:
         random_pictures()
-        global start_game 
         start_game = True
 
     random_word_index()
+
     correct_id = passed_words[len(passed_words)-1]
     pictures = [
             {
@@ -36,11 +40,9 @@ def get_response(request):
             ]
 
     random.shuffle(pic_ids)
-    #TODO make json object 
-    
     i = 0
     for i in range(0, len(pic_ids) - 1):
-        #import ipdb; ipdb.set_trace()
+
         if not (pic_ids[i] == correct_id):
             pictures.append({
                     "url": Picture.objects.get(id=pic_ids[i]).pictureUrl,
@@ -50,7 +52,6 @@ def get_response(request):
         if len(pictures) == 4:
             break
 
-    
     random.shuffle(pictures)
     response = {
         "progress": {
@@ -65,13 +66,11 @@ def get_response(request):
         
 }
 
-
     return JsonResponse(response)
 
 
 @csrf_exempt
 def check_answer(request):
-    #import ipdb; ipdb.set_trace()
     data = json.loads(request.body)
     if data['pic_id'] == data['word_id']:
         is_correct = True
@@ -83,7 +82,6 @@ def check_answer(request):
             current_progress.curr -= 1
             move(-motor_move)
 
-    # import ipdb; ipdb.set_trace()
     current_progress.save()
 
     response = {
@@ -98,25 +96,21 @@ def check_answer(request):
     return JsonResponse(response, safe=False)
 
 
-
-
 def random_pictures():
     i = 0
-    while (i < 5):
-        rand = random.randint(0, 6)
+    while (i < question_number):
+        rand = random.randint(0, Picture.objects.count() - 1)
         if not Picture.objects.all()[rand].id in pic_ids:
             pic_ids.append(Picture.objects.all()[rand].id)
             i+=1
 
 def random_word_index():
+    global passed_words
+    global word_index
     while 1:
-        global word_index
-        word_index = random.randint(0, 4)
-        if len(passed_words) == 5:
-            global passed_words
+        word_index = random.randint(0, question_number-1)
+        if len(passed_words) == question_number: 
             passed_words = []
         if not Picture.objects.all()[word_index].id in passed_words:
             passed_words.append(Picture.objects.all()[word_index].id)   
             break 
-
-
