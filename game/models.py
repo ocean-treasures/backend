@@ -17,5 +17,5 @@ class Picture(models.Model):
 
 class Progress(models.Model):
 	curr = models.IntegerField()
-	max_progress  = models.IntegerField() 
-
+	max_progress  = models.IntegerField()
+	#rope_lenght = models.IntegerField()

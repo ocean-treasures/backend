@@ -9,25 +9,31 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import sys
 sys.path.insert(0, r'/home/pi/ocean_motion')
-from pipi import move
+#from pipi import move
 
 #import ipdb; ipdb.set_trace()
 
-start_game = False
 passed_words = []
 pic_ids = []
 word_index = 0
 current_progress = Progress.objects.get()
-motor_move = 6
 question_number = Progress.objects.get(id = 1).max_progress
+motor_move = 6
+
 
 
 def get_response(request):
-   
-    global start_game 
-    if start_game == False:
-        random_pictures()
-        start_game = True
+
+
+	#It have to work... Why it don't do it???
+
+	#if question_number > Picture.objects.count():
+	#	global question_number
+	#	question_number = Picture.objects.count()
+
+    if len(pic_ids) == 0:
+    	random_pictures()
+    	#move(-Progress.objects.get(id = 1).rope_lenght)
 
     random_word_index()
 
@@ -45,7 +51,7 @@ def get_response(request):
 
         if not (pic_ids[i] == correct_id):
             pictures.append({
-                    "url": Picture.objects.get(id=pic_ids[i]).pictureUrl,
+                    "url": Picture.objects.get(id=pic_ids[i]).pictureUrl,	
                     "id": pic_ids[i]
                 })
 
@@ -75,12 +81,12 @@ def check_answer(request):
     if data['pic_id'] == data['word_id']:
         is_correct = True
         current_progress.curr += 1
-        move(motor_move)
+        #move(motor_move)
     else:
         is_correct = False
         if not current_progress.curr == 0:
             current_progress.curr -= 1
-            move(-motor_move)
+            #move(-motor_move)
 
     current_progress.save()
 
@@ -92,6 +98,14 @@ def check_answer(request):
             "max": current_progress.max_progress
         }
     }
+
+    if current_progress.curr == current_progress.max_progress:
+    	global passed_words
+    	global pic_ids
+    	global word_index
+    	passed_words = []
+    	pic_ids = []
+    	word_index = 0
 
     return JsonResponse(response, safe=False)
 
@@ -108,8 +122,8 @@ def random_word_index():
     global passed_words
     global word_index
     while 1:
-        word_index = random.randint(0, question_number-1)
-        if len(passed_words) == question_number: 
+        word_index = random.randint(0, Picture.objects.count() - 1)
+        if len(passed_words) == 4: 
             passed_words = []
         if not Picture.objects.all()[word_index].id in passed_words:
             passed_words.append(Picture.objects.all()[word_index].id)   
