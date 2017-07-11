@@ -1,15 +1,22 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponse
+from django.shortcuts import render
 from .models import Picture
 from .models import Progress
 import random
 from random import randint
 import json
 from django.views.decorators.csrf import csrf_exempt
+from sorl.thumbnail import ImageField, get_thumbnail
+from PIL import Image
+from resizeimage import resizeimage
+import StringIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files import File
 import sys
-sys.path.insert(0, r'/home/pi/ocean_motion')
-from pipi import move
+sys.path.insert(0, r'/home/pi/ocean_motion/ocean_motion')
+from motion import move
 
 #import ipdb; ipdb.set_trace()
 
@@ -19,9 +26,17 @@ word_index = 0
 current_progress = Progress.objects.get()
 question_number = Progress.objects.get(id = 1).max_progress
 motor_move = Progress.objects.get(id = 1).rope_lenght/question_number
+active_game = True
 
 def get_response(request):
 
+    #if Progress.objects.get(id = 1).curr == 0:
+    #    active_game = True
+
+    #if active_game == False:
+    #    return HttpResponse(404)
+    #    return HttpResponseNotFound("Page not found")
+    
     if question_number > Picture.objects.count():
         global question_number
         question_number = Picture.objects.count()
@@ -31,11 +46,12 @@ def get_response(request):
 
     if len(pic_ids) == 0:
     	random_pictures()
-    	move(-Progress.objects.get(id = 1).rope_lenght)
+    	#move(-Progress.objects.get(id = 1).rope_lenght)
 
     random_word_index()
 
-    correct_id = passed_words[len(passed_words)-1]
+    correct_id = passed_words[len(passed_words)-1]   
+
     pictures = [
             {
                 "url": Picture.objects.get(id=correct_id).pictureUrl,
@@ -60,7 +76,7 @@ def get_response(request):
     response = {
         "progress": {
             "current": current_progress.curr,
-            "max": current_progress.max_progress
+            "max": question_number
         },
         "word": {
             "id": correct_id,
@@ -93,7 +109,7 @@ def check_answer(request):
         "correct": is_correct,
         "progress": {
             "current": current_progress.curr,
-            "max": current_progress.max_progress
+            "max": question_number
         }
     }
 
@@ -102,6 +118,8 @@ def check_answer(request):
     	global pic_ids
     	global word_index
         global current_progress
+        global active_game
+        #active_game = False
         current_progress.curr = 0
         current_progress.save()
     	passed_words = []
