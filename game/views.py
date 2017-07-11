@@ -9,7 +9,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import sys
 sys.path.insert(0, r'/home/pi/ocean_motion')
-#from pipi import move
+from pipi import move
 
 #import ipdb; ipdb.set_trace()
 
@@ -18,22 +18,20 @@ pic_ids = []
 word_index = 0
 current_progress = Progress.objects.get()
 question_number = Progress.objects.get(id = 1).max_progress
-motor_move = 6
-
-
+motor_move = Progress.objects.get(id = 1).rope_lenght/question_number
 
 def get_response(request):
 
+    if question_number > Picture.objects.count():
+        global question_number
+        question_number = Picture.objects.count()
 
-	#It have to work... Why it don't do it???
-
-	#if question_number > Picture.objects.count():
-	#	global question_number
-	#	question_number = Picture.objects.count()
+    if question_number < 4:
+        question_number = 4
 
     if len(pic_ids) == 0:
     	random_pictures()
-    	#move(-Progress.objects.get(id = 1).rope_lenght)
+    	move(-Progress.objects.get(id = 1).rope_lenght)
 
     random_word_index()
 
@@ -81,12 +79,12 @@ def check_answer(request):
     if data['pic_id'] == data['word_id']:
         is_correct = True
         current_progress.curr += 1
-        #move(motor_move)
+        move(motor_move)
     else:
         is_correct = False
         if not current_progress.curr == 0:
             current_progress.curr -= 1
-            #move(-motor_move)
+            move(-motor_move)
 
     current_progress.save()
 
@@ -103,6 +101,9 @@ def check_answer(request):
     	global passed_words
     	global pic_ids
     	global word_index
+        global current_progress
+        current_progress.curr = 0
+        current_progress.save()
     	passed_words = []
     	pic_ids = []
     	word_index = 0

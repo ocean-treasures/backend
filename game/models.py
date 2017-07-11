@@ -8,14 +8,8 @@ class Picture(models.Model):
 	def __str__(self):
 		return self.word
 
-	def hi(self):
-		return "hilll"
-
-	def get_pic(self):
-		return self.pictureUrl
-
 
 class Progress(models.Model):
-	curr = models.IntegerField()
+	curr = models.IntegerField(help_text="This is the grey text")
 	max_progress  = models.IntegerField()
 	rope_lenght = models.IntegerField()
