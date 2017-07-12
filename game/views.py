@@ -7,13 +7,7 @@ from .models import Progress
 import random
 from random import randint
 import json
-from django.views.decorators.csrf import csrf_exempt
-from sorl.thumbnail import ImageField, get_thumbnail
-from PIL import Image
-from resizeimage import resizeimage
-import StringIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.files import File
+from django.views.decorators.csrf import csrf_exempt	
 import sys
 sys.path.insert(0, r'/home/pi/ocean_motion/ocean_motion')
 from motion import move
@@ -23,19 +17,11 @@ from motion import move
 passed_words = []
 pic_ids = []
 word_index = 0
-current_progress = Progress.objects.get()
+current_progress = 0
 question_number = Progress.objects.get(id = 1).max_progress
 motor_move = Progress.objects.get(id = 1).rope_lenght/question_number
-active_game = True
 
 def get_response(request):
-
-    #if Progress.objects.get(id = 1).curr == 0:
-    #    active_game = True
-
-    #if active_game == False:
-    #    return HttpResponse(404)
-    #    return HttpResponseNotFound("Page not found")
     
     if question_number > Picture.objects.count():
         global question_number
@@ -46,7 +32,7 @@ def get_response(request):
 
     if len(pic_ids) == 0:
     	random_pictures()
-    	#move(-Progress.objects.get(id = 1).rope_lenght)
+    	move(-Progress.objects.get(id = 1).rope_lenght)
 
     random_word_index()
 
@@ -75,7 +61,7 @@ def get_response(request):
     random.shuffle(pictures)
     response = {
         "progress": {
-            "current": current_progress.curr,
+            "current": current_progress,
             "max": question_number
         },
         "word": {
@@ -94,34 +80,30 @@ def check_answer(request):
     data = json.loads(request.body)
     if data['pic_id'] == data['word_id']:
         is_correct = True
-        current_progress.curr += 1
-        move(motor_move)
+        current_progress += 1
+        move(motor_move, True)
     else:
         is_correct = False
-        if not current_progress.curr == 0:
-            current_progress.curr -= 1
-            move(-motor_move)
-
-    current_progress.save()
+        if not current_progress == 0:
+            current_progress -= 1
+            move(-motor_move, True)
 
     response = {
         "word": Picture.objects.get(id = data['pic_id']).word,
         "correct": is_correct,
         "progress": {
-            "current": current_progress.curr,
+            "current": current_progress,
             "max": question_number
         }
     }
 
-    if current_progress.curr == current_progress.max_progress:
+    if current_progress == Progress.objects.get(id =1).max_progress:
     	global passed_words
     	global pic_ids
     	global word_index
         global current_progress
         global active_game
-        #active_game = False
-        current_progress.curr = 0
-        current_progress.save()
+        current_progress = 0
     	passed_words = []
     	pic_ids = []
     	word_index = 0
