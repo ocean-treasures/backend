@@ -4,12 +4,13 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Picture
 from .models import Progress
+from .models import Game
 import random
 from random import randint
 import json
 from django.views.decorators.csrf import csrf_exempt	
 import sys
-sys.path.insert(0, r'/home/pi/ocean_motion/ocean_motion')
+sys.path.insert(0, r'/home/pi/ocean_motion')
 from motion import move
 
 #import ipdb; ipdb.set_trace()
@@ -23,16 +24,23 @@ motor_move = Progress.objects.get(id = 1).rope_lenght/question_number
 
 def get_response(request):
     
+    '''
     if question_number > Picture.objects.count():
         global question_number
         question_number = Picture.objects.count()
 
     if question_number < 4:
         question_number = 4
+    '''
 
     if len(pic_ids) == 0:
-    	random_pictures()
-    	move(-Progress.objects.get(id = 1).rope_lenght)
+        active_game = Game.objects.get(active = True)
+        #print (active_game.name)
+        pictures = active_game.pictures.all()
+        print (pictures)
+        #print (pictures)
+        random_pictures()
+        move(-Progress.objects.get(id = 1).rope_lenght)
 
     random_word_index()
 

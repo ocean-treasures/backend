@@ -40,6 +40,9 @@ INSTALLED_APPS = (
     'game.apps.GameConfig',
 
     'sorl.thumbnail',
+    'material',
+    'material.frontend',
+    'material.admin',
 )
 
 MIDDLEWARE_CLASSES = (
