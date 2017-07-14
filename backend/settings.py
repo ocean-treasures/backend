@@ -39,11 +39,19 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'game.apps.GameConfig',
 
-    'sorl.thumbnail',
-    'material',
-    'material.frontend',
-    'material.admin',
+    'constance',
+    'constance.backends.database',
 )
+
+CONSTANCE_CONFIG = {
+    'Going Up': (0, 'Time of the rope going up'),
+    'Going Down': (0, 'Time of the rope going down'),
+    'Rope Lenght': (0, 'Lenght of the rope'),
+}
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_SUPERUSER_ONLY = False
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

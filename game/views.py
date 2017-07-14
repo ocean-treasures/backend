@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 import sys
 sys.path.insert(0, r'/home/pi/ocean_motion')
 from motion import move
+from constance.signals import config_updated
 
 #import ipdb; ipdb.set_trace()
 
@@ -38,6 +39,8 @@ def get_response(game_picturs):
     
     if Game.objects.get(active = True).current == 0:
         global pic_ids
+        global passed_words
+        passed_words = []
         pic_ids = []
         for i in range(0, game_picturs.count()):
             pic_ids.append(game_picturs[i].id)
@@ -143,3 +146,11 @@ def random_word_index(game_picturs):
         if not game_picturs[word_index].id in passed_words:
             passed_words.append(game_picturs[word_index].id)   
             break 
+
+
+'''
+@receiver(config_updated)
+def calibration(requet, sender, key, old_value, new_value, **kwargs):
+    print(sender, key, old_value, new_value)
+    return HttpResponse("Hello")
+'''
