@@ -1,10 +1,4 @@
 from django.db import models
-#from django.utils.html import format_html
-#from material.frontend import Module
-
-#class Sample(Module):
-#    icon = 'mdi-image-compare'
-
 
 class Picture(models.Model):
 	pictureUrl = models.CharField(max_length = 250)

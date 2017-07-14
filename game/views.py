@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 import sys
 sys.path.insert(0, r'/home/pi/ocean_motion')
 from motion import move
-from constance.signals import config_updated
+from constance import config
 
 #import ipdb; ipdb.set_trace()
 
@@ -31,7 +31,7 @@ def is_active_game(request):
         global question_number
         question_number = Game.objects.get(active = True).number_of_pictures()
         global motor_move
-        motor_move = Game.objects.get(active = True).rope_lenght/question_number
+        motor_move = config.ROPE_LENGHT/question_number
         response = get_response(game_picturs)
         return JsonResponse(response, safe=False)
 
@@ -83,7 +83,6 @@ def get_response(game_picturs):
         "pictures": pictures
         
 }
-
     return response
 
 
@@ -95,13 +94,14 @@ def check_answer(request):
         is_correct = True
         current_progress.current += 1
         current_progress.save()
-        move(motor_move, True)
+        print(-(motor_move * config.GOING_DOWN))
+        move(-(motor_move * config.GOING_DOWN), True)
     else:
         is_correct = False
         if not current_progress.current == 0:
             current_progress.current -= 1
             current_progress.save()
-            move(-motor_move, True)
+            move(-(motor_move * config.GOING_DOWN), True)
 
     response = {
         "word": Picture.objects.get(id = data['pic_id']).word,
@@ -126,16 +126,6 @@ def check_answer(request):
 
     return JsonResponse(response, safe=False)
 
-'''
-def random_pictures():
-    i = 0
-    while (i < question_number):
-        rand = random.randint(0, Picture.objects.count() - 1)
-        if not Picture.objects.all()[rand].id in pic_ids:
-            pic_ids.append(Picture.objects.all()[rand].id)
-            i+=1
-    print (pic_ids)
-'''
 def random_word_index(game_picturs):
     global passed_words
     global word_index
@@ -148,9 +138,25 @@ def random_word_index(game_picturs):
             break 
 
 
-'''
-@receiver(config_updated)
-def calibration(requet, sender, key, old_value, new_value, **kwargs):
-    print(sender, key, old_value, new_value)
-    return HttpResponse("Hello")
-'''
+def move_up(request, time_in_seconds):
+    move(time_in_seconds)
+    return JsonResponse({"time_in_seconds" : time_in_seconds})
+
+def move_down(request, time_in_seconds):
+    move(-int(time_in_seconds))
+    return JsonResponse({"time_in_seconds" : time_in_seconds})
+
+@csrf_exempt
+def rope_lenght(request):
+    data = json.loads(request.body)
+    config.ROPE_LENGHT = data['rope_lenght']
+    return JsonResponse(data)
+
+@csrf_exempt
+def calibration(request, time_in_seconds):
+    sm = json.loads(request.body)
+    up = sm['lenght_going_up']
+    down = sm['lenght_going_down']
+    config.GOING_UP = float(up)/float(time_in_seconds)
+    config.GOING_DOWN = float(down)/float(time_in_seconds)
+    return JsonResponse({})
