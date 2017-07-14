@@ -143,7 +143,7 @@ def move_up(request, time_in_seconds):
     return JsonResponse({"time_in_seconds" : time_in_seconds})
 
 def move_down(request, time_in_seconds):
-    move(-int(time_in_seconds))
+    move(int(time_in_seconds), clockwise=False)
     return JsonResponse({"time_in_seconds" : time_in_seconds})
 
 @csrf_exempt
