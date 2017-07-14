@@ -139,7 +139,7 @@ def random_word_index(game_picturs):
 
 
 def move_up(request, time_in_seconds):
-    move(int(time_in_seconds))
+    move(int(time_in_seconds, clockwise=True))
     return JsonResponse({"time_in_seconds" : time_in_seconds})
 
 def move_down(request, time_in_seconds):
