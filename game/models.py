@@ -13,15 +13,6 @@ class Picture(models.Model):
 	def __str__(self):
 		return self.word
 
-class Progress(models.Model):
-	#curr =  models.IntegerField()
-	pictures = models.ManyToManyField(Picture)
-	max_progress  = models.IntegerField(help_text="Number of pictures for one game")
-	rope_lenght = models.IntegerField()
-
-	def __str__(self):
-		return 'Game ' + str(self.id)
-
 class Game(models.Model):
 	name = models.CharField(max_length = 30)
 	active = models.BooleanField()
@@ -33,17 +24,11 @@ class Game(models.Model):
 		return self.name
 
 	def save(self, *args, **kwargs):
-		Game.objects.filter(active = True)
 		if self.active == True:
+			active = Game.objects.filter(active = True).update(current = 0)
 			active = Game.objects.filter(active = True).update(active = False)
-			
 			self.active = True
-		super(Game, self).save(*args, **kwargs)
-		#super(Game).save(*args, **kwargs)
-		#active_games = Game.objects.filter(active = True)
-		#Game.objects.filter(active = True).update(active = False)
-		#self.active = True
-		#self.save()	
+		super(Game, self).save(*args, **kwargs)	
 
 	def number_of_pictures(self):
 		return self.pictures.count()

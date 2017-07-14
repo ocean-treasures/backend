@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Picture
-from .models import Progress
 from .models import Game
 
 def add_to(modeladmin, request, queryset):
@@ -12,8 +11,6 @@ class PictureAdmin(admin.ModelAdmin):
     search_fields = ['word']
     actions = [add_to]
 
-class ProgressAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'max_progress', 'rope_lenght')
 
 class GameAdmin(admin.ModelAdmin):
     exclude = ['current']
@@ -22,6 +19,5 @@ class GameAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Picture, PictureAdmin)
-admin.site.register(Progress, ProgressAdmin)
 admin.site.register(Game, GameAdmin)
 

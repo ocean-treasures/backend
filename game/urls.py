@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^next_word/', views.get_response, name='get_response'),
+    url(r'^next_word/', views.is_active_game, name='get_response'),
     url(r'^check_answer/', views.check_answer, name='check_answer'),
     #url(r'^test/', views.test, name='test'),
 ]
