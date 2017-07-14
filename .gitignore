@@ -1,0 +1,6 @@
+*.pyc
+
+cache/
+
+*.sqlite3
+*.sqlite3-journal
