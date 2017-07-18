@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^move_down/(?P<time_in_seconds>[0-9]+)', views.move_down, name='move_down'),
     url(r'^rope_lenght/', views.rope_lenght, name='rope_lenhgt'),
     url(r'^calibration/(?P<time_in_seconds>[0-9]+)', views.calibration, name='calibration'),
+    url(r'^calibration_page/', views.calibration_page)
     #url(r'^calibration/', views.calibration, name='calibration'),
     #url(r'^test/', views.test, name='test'),
 ]

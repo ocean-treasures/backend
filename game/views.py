@@ -162,3 +162,6 @@ def calibration(request, time_in_seconds):
     config.GOING_UP = float(up)/float(time_in_seconds)
     config.GOING_DOWN = float(down)/float(time_in_seconds)
     return JsonResponse({})
+
+def calibration_page(request):
+    return render('calibrate.html', {})
