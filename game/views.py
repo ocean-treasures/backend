@@ -19,7 +19,7 @@ passed_words = []
 pic_ids = []
 word_index = 0
 question_number = 0
-motor_move = 0
+motor_move = 0.0
 
 def is_active_game(request):
     if Game.objects.filter(active = True).count() == 0:
@@ -94,14 +94,16 @@ def check_answer(request):
         is_correct = True
         current_progress.current += 1
         current_progress.save()
-        print(-(motor_move * config.GOING_DOWN))
-        move(-(motor_move * config.GOING_DOWN), True)
+        print("Here")
+        print(motor_move)
+        print((motor_move * config.GOING_DOWN))
+        move((motor_move * config.GOING_DOWN), clockwise=False)
     else:
         is_correct = False
         if not current_progress.current == 0:
             current_progress.current -= 1
             current_progress.save()
-            move(-(motor_move * config.GOING_DOWN), True)
+            move((motor_move * config.GOING_DOWN),clockwise=True)
 
     response = {
         "word": Picture.objects.get(id = data['pic_id']).word,
@@ -139,11 +141,11 @@ def random_word_index(game_picturs):
 
 
 def move_up(request, time_in_seconds):
-    move(int(time_in_seconds), clockwise=True)
+    move(float(time_in_seconds), clockwise=True)
     return JsonResponse({"time_in_seconds" : time_in_seconds})
 
 def move_down(request, time_in_seconds):
-    move(int(time_in_seconds), clockwise=False)
+    move(float(time_in_seconds), clockwise=False)
     return JsonResponse({"time_in_seconds" : time_in_seconds})
 
 @csrf_exempt

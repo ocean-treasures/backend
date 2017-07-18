@@ -12,4 +12,3 @@ urlpatterns = [
     #url(r'^calibration/', views.calibration, name='calibration'),
     #url(r'^test/', views.test, name='test'),
 ]
-   
