@@ -46,7 +46,7 @@ INSTALLED_APPS = (
 CONSTANCE_CONFIG = {
     'GOING_UP': (0.0, 'Time of the rope going up'),
     'GOING_DOWN': (0.0, 'Time of the rope going down'),
-    'ROPE_LENGHT': (0, 'Lenght of the rope'),
+    'ROPE_LENGHT': (0.0, 'Lenght of the rope'),
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

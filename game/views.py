@@ -97,7 +97,7 @@ def check_answer(request):
         print("Here")
         print(motor_move)
         print((motor_move * config.GOING_DOWN))
-        move((motor_move * config.GOING_DOWN), clockwise=False)
+        move((motor_move * config.GOING_UP), clockwise=False)
     else:
         is_correct = False
         if not current_progress.current == 0:
@@ -141,17 +141,17 @@ def random_word_index(game_picturs):
 
 
 def move_up(request, time_in_seconds):
-    move(float(time_in_seconds), clockwise=True)
+    move(float(time_in_seconds), clockwise=True, async=False)
     return JsonResponse({"time_in_seconds" : time_in_seconds})
 
 def move_down(request, time_in_seconds):
-    move(float(time_in_seconds), clockwise=False)
+    move(float(time_in_seconds), clockwise=False, async=False)
     return JsonResponse({"time_in_seconds" : time_in_seconds})
 
 @csrf_exempt
 def rope_lenght(request):
     data = json.loads(request.body)
-    config.ROPE_LENGHT = data['rope_lenght']
+    config.ROPE_LENGHT = float(data['rope_lenght'])
     return JsonResponse(data)
 
 @csrf_exempt
@@ -159,9 +159,9 @@ def calibration(request, time_in_seconds):
     sm = json.loads(request.body)
     up = sm['lenght_going_up']
     down = sm['lenght_going_down']
-    config.GOING_UP = float(up)/float(time_in_seconds)
-    config.GOING_DOWN = float(down)/float(time_in_seconds)
+    config.GOING_UP = float(time_in_seconds)/float(up)
+    config.GOING_DOWN = float(time_in_seconds)/float(down)
     return JsonResponse({})
 
 def calibration_page(request):
-    return render('calibrate.html', {})
+    return render(request, 'calibrate.html', {})
