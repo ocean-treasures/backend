@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Picture
-from .models import Topic
-from .models import Game
+from .forms import GameAdminForm
+from .models import Picture, Topic, Game
 
 '''
 def add_to(modeladmin, request, queryset):
@@ -18,6 +17,8 @@ class GameAdmin(admin.ModelAdmin):
     exclude = ['current']
     list_display = ('name', 'active', 'number_of_pictures', 'rope_lenght')
     filter_horizontal = ['pictures']
+
+    form = GameAdminForm
 
 
 admin.site.register(Picture, PictureAdmin)
