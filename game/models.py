@@ -1,11 +1,21 @@
 from django.db import models
 
+class Topic(models.Model):
+	topic = models.CharField(max_length = 30)
+
+	def __str__(self):
+		return self.topic
+
 class Picture(models.Model):
 	pictureUrl = models.CharField(max_length = 250)
 	word = models.CharField(max_length = 30)
+	topic = models.ForeignKey(Topic, related_name='picture', null=True)
 
 	def __str__(self):
 		return self.word
+
+	def show_topic(self):
+		return self.topic
 
 class Game(models.Model):
 	name = models.CharField(max_length = 30)

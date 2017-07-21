@@ -20,11 +20,16 @@ pic_ids = []
 word_index = 0
 question_number = 0
 motor_move = 0.0
+active_game = -1
 
 def is_active_game(request):
     if Game.objects.filter(active = True).count() == 0:
         return HttpResponseNotFound("No active game")
     else:
+        global active_game
+        if(Game.objects.get(active = True).id != active_game):
+            null()
+            active_game = Game.objects.get(active = True).id        
         game_picturs = Game.objects.get(active = True).pictures.all()
         current_progress = Game.objects.get(active = True)
         print(current_progress.id)
@@ -38,10 +43,8 @@ def is_active_game(request):
 def get_response(game_picturs):
     
     if Game.objects.get(active = True).current == 0:
-        global pic_ids
-        global passed_words
-        passed_words = []
-        pic_ids = []
+        null()
+        move((config.ROPE_LENGHT * config.GOING_UP), clockwise=True)
         for i in range(0, game_picturs.count()):
             pic_ids.append(game_picturs[i].id)
 
@@ -94,9 +97,6 @@ def check_answer(request):
         is_correct = True
         current_progress.current += 1
         current_progress.save()
-        print("Here")
-        print(motor_move)
-        print((motor_move * config.GOING_DOWN))
         move((motor_move * config.GOING_UP), clockwise=False)
     else:
         is_correct = False
@@ -115,16 +115,10 @@ def check_answer(request):
     }
 
     if current_progress.current == Game.objects.get(active = True).number_of_pictures():
-    	global passed_words
-    	global pic_ids
-    	global word_index
         global current_progress
-        global active_game
         current_progress.current = 0
         current_progress.save()
-    	passed_words = []
-    	pic_ids = []
-    	word_index = 0
+    	null()
 
     return JsonResponse(response, safe=False)
 
@@ -139,6 +133,13 @@ def random_word_index(game_picturs):
             passed_words.append(game_picturs[word_index].id)   
             break 
 
+def null():
+    global passed_words
+    global pic_ids
+    global word_index
+    pic_ids = []
+    word_index = 0
+    passed_words = []
 
 def move_up(request, time_in_seconds):
     move(float(time_in_seconds), clockwise=True, async=False)
@@ -165,3 +166,5 @@ def calibration(request, time_in_seconds):
 
 def calibration_page(request):
     return render(request, 'calibrate.html', {})
+
+
