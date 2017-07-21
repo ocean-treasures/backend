@@ -25,7 +25,7 @@ SECRET_KEY = '0k^*07nw92z3sa+#l2!j6y!-pggi$j@ug25v(@3b*iis7u3i+b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.3.18",]
+ALLOWED_HOSTS = ["192.168.3.18","172.16.1.179"]
 
 
 # Application definition
@@ -46,7 +46,7 @@ INSTALLED_APPS = (
 CONSTANCE_CONFIG = {
     'GOING_UP': (0.0, 'Time of the rope going up'),
     'GOING_DOWN': (0.0, 'Time of the rope going down'),
-    'ROPE_LENGHT': (0, 'Lenght of the rope'),
+    'ROPE_LENGHT': (0.0, 'Lenght of the rope'),
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
