@@ -26,10 +26,6 @@ def is_active_game(request):
     if Game.objects.filter(active = True).count() == 0:
         return HttpResponseNotFound("No active game")
     else:
-        global active_game
-        if(Game.objects.get(active = True).id != active_game):
-            null()
-            active_game = Game.objects.get(active = True).id        
         game_picturs = Game.objects.get(active = True).pictures.all()
         current_progress = Game.objects.get(active = True)
         print(current_progress.id)
@@ -41,12 +37,18 @@ def is_active_game(request):
         return JsonResponse(response, safe=False)
 
 def get_response(game_picturs):
-    
+    print("Current")
+    print(Game.objects.get(active = True).current)
+    print("end")
+
     if Game.objects.get(active = True).current == 0:
         null()
-        move((config.ROPE_LENGHT * config.GOING_UP), clockwise=True)
-        for i in range(0, game_picturs.count()):
-            pic_ids.append(game_picturs[i].id)
+        for picture in game_picturs:
+            pic_ids.append(picture.id)
+
+
+    print("After")
+    print (pic_ids)
 
     random_word_index(game_picturs)
 
@@ -58,9 +60,10 @@ def get_response(game_picturs):
             },
             ]
 
-    print ([pic.id for pic in game_picturs])
+    print("PICDS")
     print (pic_ids)
     random.shuffle(pic_ids)
+
     i = 0
     for i in range(0, len(pic_ids)):
 
@@ -125,10 +128,15 @@ def check_answer(request):
 def random_word_index(game_picturs):
     global passed_words
     global word_index
+    print("Passed words")
+    print passed_words
+    print("PICID")
+    print pic_ids
     while 1:
-        word_index = random.randint(0, len(pic_ids)-1)
-        if len(passed_words) == 4: 
+        word_index = random.randint(0, len(set(pic_ids))-1)
+        if len(passed_words) == len(game_picturs): 
             passed_words = []
+        print("pictures: ", game_picturs)
         if not game_picturs[word_index].id in passed_words:
             passed_words.append(game_picturs[word_index].id)   
             break 
