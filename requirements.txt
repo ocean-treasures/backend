@@ -1,0 +1,4 @@
+django==1.11
+django-constance==2.0.0
+django-picklefield==1.0.0
+
