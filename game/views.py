@@ -100,13 +100,13 @@ def check_answer(request):
         is_correct = True
         current_progress.current += 1
         current_progress.save()
-        move((motor_move * config.GOING_UP), clockwise=False)
+        move((motor_move * config.GOING_DOWN), clockwise=False)
     else:
         is_correct = False
         if not current_progress.current == 0:
             current_progress.current -= 1
             current_progress.save()
-            move((motor_move * config.GOING_DOWN),clockwise=True)
+            move((motor_move * config.GOING_UP),clockwise=True)
 
     response = {
         "word": Picture.objects.get(id = data['pic_id']).word,
