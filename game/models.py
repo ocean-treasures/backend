@@ -20,7 +20,6 @@ class Picture(models.Model):
 class Game(models.Model):
 	name = models.CharField(max_length = 30)
 	active = models.BooleanField()
-	rope_lenght = models.IntegerField()
 	pictures = models.ManyToManyField(Picture, related_name='game')
 	current = models.IntegerField(default = 0)
 

@@ -15,7 +15,7 @@ class PictureAdmin(admin.ModelAdmin):
 
 class GameAdmin(admin.ModelAdmin):
     exclude = ['current']
-    list_display = ('name', 'active', 'number_of_pictures', 'rope_lenght')
+    list_display = ('name', 'active', 'number_of_pictures', )
     filter_horizontal = ['pictures']
 
     form = GameAdminForm
