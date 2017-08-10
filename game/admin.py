@@ -5,7 +5,7 @@ from .models import Picture, Topic, Game
 
 
 class PictureAdmin(admin.ModelAdmin):
-    list_display = ('word', 'topic' , 'pictureUrl')
+    list_display = ('word', 'topic', 'pictureUrl')
     search_fields = ['word', 'topic__topic']
 
 

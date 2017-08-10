@@ -30,11 +30,11 @@ class Game(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        if self.active == True:
-            active = Game.objects.filter(active=True).update(current=0)
-            active = Game.objects.filter(active=True).update(active=False)
+        if self.active:
+            Game.objects.filter(active=True).update(current=0)
+            Game.objects.filter(active=True).update(active=False)
             self.active = True
-        super(Game, self).save(*args, **kwargs) 
+        super(Game, self).save(*args, **kwargs)
 
     def number_of_pictures(self):
         return self.pictures.count()
