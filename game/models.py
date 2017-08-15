@@ -1,4 +1,7 @@
+from constance import config
 from django.db import models
+sys.path.insert(0, r'/home/pi/ocean_motion')
+from motion import move
 
 
 class Topic(models.Model):
@@ -30,6 +33,10 @@ class Game(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
+        active_game = Game.objects.filter(active=True)
+        for i in range(0, active_game.current):
+            motor_move = motor_move = config.ROPE_LENGHT / active_game.number_of_pictures()
+            move((motor_move * config.GOING_UP), clockwise=True, async=False)
         if self.active:
             Game.objects.filter(active=True).update(current=0)
             Game.objects.filter(active=True).update(active=False)
