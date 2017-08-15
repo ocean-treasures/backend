@@ -1,3 +1,5 @@
+import sys
+
 from constance import config
 from django.db import models
 sys.path.insert(0, r'/home/pi/ocean_motion')
