@@ -35,10 +35,10 @@ class Game(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        active_game = Game.objects.get(active=True)
-        for i in range(0, active_game.current + 1):
-            motor_move = config.ROPE_LENGHT / active_game.number_of_pictures()
-            move((motor_move * config.GOING_UP), clockwise=True, async=False)
+        # active_game = Game.objects.get(active=True)
+        # for i in range(0, active_game.current + 1):
+        #     motor_move = config.ROPE_LENGHT / active_game.number_of_pictures()
+        #     move((motor_move * config.GOING_UP), clockwise=True, async=False)
         if self.active:
             Game.objects.filter(active=True).update(current=0)
             Game.objects.filter(active=True).update(active=False)
