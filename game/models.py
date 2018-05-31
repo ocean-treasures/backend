@@ -9,7 +9,7 @@ class Topic(models.Model):
 class Picture(models.Model):
 	pictureUrl = models.CharField(max_length = 250)
 	word = models.CharField(max_length = 30)
-	topic = models.ForeignKey(Topic, related_name='picture', null=True)
+	topic = models.ForeignKey(Topic, related_name='picture', null=True, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return self.word

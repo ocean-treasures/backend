@@ -9,8 +9,7 @@ from random import randint
 import json
 from django.views.decorators.csrf import csrf_exempt	
 import sys
-sys.path.insert(0, r'/home/pi/ocean_motion')
-from motion import move
+from ocean_motion import motor
 from constance import config
 
 #import ipdb; ipdb.set_trace()
@@ -21,6 +20,9 @@ word_index = 0
 question_number = 0
 motor_move = 0.0
 active_game = -1
+
+current_progress = 1
+
 
 def is_active_game(request):
     if Game.objects.filter(active = True).count() == 0:
@@ -94,6 +96,7 @@ def get_response(game_picturs):
 
 @csrf_exempt
 def check_answer(request):
+    global current_progress
     current_progress = Game.objects.get(active = True)
     data = json.loads(request.body)
     if data['pic_id'] == data['word_id']:
@@ -118,10 +121,9 @@ def check_answer(request):
     }
 
     if current_progress.current == Game.objects.get(active = True).number_of_pictures():
-        global current_progress
         current_progress.current = 0
         current_progress.save()
-    	null()
+        null()
 
     return JsonResponse(response, safe=False)
 
@@ -129,9 +131,9 @@ def random_word_index(game_picturs):
     global passed_words
     global word_index
     print("Passed words")
-    print passed_words
+    print(passed_words)
     print("PICID")
-    print pic_ids
+    print(pic_ids)
     while 1:
         word_index = random.randint(0, len(set(pic_ids))-1)
         if len(passed_words) == len(game_picturs): 
@@ -149,13 +151,16 @@ def null():
     word_index = 0
     passed_words = []
 
-def move_up(request, time_in_seconds):
-    move(float(time_in_seconds), clockwise=True, async=False)
-    return JsonResponse({"time_in_seconds" : time_in_seconds})
 
-def move_down(request, time_in_seconds):
-    move(float(time_in_seconds), clockwise=False, async=False)
-    return JsonResponse({"time_in_seconds" : time_in_seconds})
+def move_up(request, steps):
+    motor.up(steps)
+    return JsonResponse({"steps": steps})
+
+
+def move_down(request, steps):
+    motor.down(steps)
+    return JsonResponse({"steps": steps})
+
 
 @csrf_exempt
 def rope_lenght(request):

@@ -25,7 +25,7 @@ SECRET_KEY = '0k^*07nw92z3sa+#l2!j6y!-pggi$j@ug25v(@3b*iis7u3i+b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.3.18","172.16.1.179"]
+ALLOWED_HOSTS = ["localhost", "192.168.3.18", "172.16.1.179"]
 
 
 # Application definition
@@ -53,16 +53,15 @@ CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
 CONSTANCE_SUPERUSER_ONLY = False
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-)
+]
 
 ROOT_URLCONF = 'backend.urls'
 

@@ -1,0 +1,4 @@
+django
+git+git://github.com/ocean-treasures/ocean_motion
+django-constance
+django-picklefield
