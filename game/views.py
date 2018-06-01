@@ -1,18 +1,14 @@
-from django.shortcuts import render
 from django.http import JsonResponse
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from .models import Picture
 from .models import Game
 import random
-from random import randint
 import json
-from django.views.decorators.csrf import csrf_exempt	
-import sys
-from ocean_motion import motor
+from django.views.decorators.csrf import csrf_exempt
+import ocean_motion
 from constance import config
 
-#import ipdb; ipdb.set_trace()
 
 passed_words = []
 pic_ids = []
@@ -25,7 +21,7 @@ current_progress = 1
 
 
 def is_active_game(request):
-    if Game.objects.filter(active = True).count() == 0:
+    if Game.objects.filter(active=True).count() == 0:
         return HttpResponseNotFound("No active game")
     else:
         game_picturs = Game.objects.get(active = True).pictures.all()
@@ -153,12 +149,12 @@ def null():
 
 
 def move_up(request, steps):
-    motor.up(steps)
+    ocean_motion.motor.up(steps)
     return JsonResponse({"steps": steps})
 
 
 def move_down(request, steps):
-    motor.down(steps)
+    ocean_motion.motor.down(steps)
     return JsonResponse({"steps": steps})
 
 
