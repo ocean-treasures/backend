@@ -25,7 +25,7 @@ p{
         display: inline-block;
         color: #00004d;
         text-align: center;
-        margin: 50px 50px 160px 50px;
+        margin: 10px 10px 10px 10px;
         font-size: 20px;
         background-color: rgba(71, 182, 200, 0.51);
         padding: 10px 13px;
@@ -114,3 +114,12 @@ p{
         display: block;
         max-width: 300px;
     }
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

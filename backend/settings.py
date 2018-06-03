@@ -44,9 +44,7 @@ INSTALLED_APPS = (
 )
 
 CONSTANCE_CONFIG = {
-    'GOING_UP': (0.0, 'Time of the rope going up'),
-    'GOING_DOWN': (0.0, 'Time of the rope going down'),
-    'ROPE_LENGHT': (0.0, 'Lenght of the rope'),
+    'TOTAL_STEPS': (0, 'Total steps of the motor'),
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
@@ -113,3 +111,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.sep.join([BASE_DIR,'static'])
