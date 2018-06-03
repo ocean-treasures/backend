@@ -8,13 +8,13 @@ class Topic(models.Model):
         return self.topic
 
 
-class Picture(models.Model):
-    pictureUrl = models.CharField(max_length=250)
-    word = models.CharField(max_length=30)
-    topic = models.ForeignKey(Topic, related_name='picture', null=True, on_delete=models.CASCADE)
+class Word(models.Model):
+    picture_url = models.CharField(max_length=250)
+    text = models.CharField(max_length=30)
+    topic = models.ForeignKey(Topic, related_name='words', null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.word
+        return self.text
 
     def show_topic(self):
         return self.topic
@@ -22,19 +22,19 @@ class Picture(models.Model):
 
 class Game(models.Model):
     name = models.CharField(max_length=30)
-    active = models.BooleanField()
+    is_active = models.BooleanField()
     rope_lenght = models.IntegerField()
-    pictures = models.ManyToManyField(Picture, related_name='game')
-    current = models.IntegerField(default=0)
+    words = models.ManyToManyField(Word)
+    guessed_words = models.ManyToManyField(Word, related_name="+")
 
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        if self.active:
-            Game.objects.filter(active=True).update(current=0, active=False)
-            self.active = True
-        super(Game, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.is_active and self.guessed_words.count():
+    #         for word in self.guessed_words.all():
+    #             self.guessed_words.remove(word.id)
+    #     super(Game, self).save(*args, **kwargs)
 
     def number_of_pictures(self):
-        return self.pictures.count()
+        return self.words.count()

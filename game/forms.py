@@ -1,6 +1,7 @@
 from django import forms
 from .models import Game
 
+
 class GameAdminForm(forms.ModelForm):
     class Meta:
         model = Game
