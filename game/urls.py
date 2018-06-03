@@ -7,8 +7,7 @@ urlpatterns = [
     url(r'^check_answer/', views.check_answer, name='check_answer'),
     url(r'^move_up/(?P<steps>[0-9]+)', views.move_up, name='move_up'),
     url(r'^move_down/(?P<steps>[0-9]+)', views.move_down, name='move_down'),
-    url(r'^rope_lenght/', views.rope_lenght, name='rope_lenhgt'),
-    url(r'^calibration/(?P<time_in_seconds>[0-9]+)', views.calibration, name='calibration'),
+    url(r'^calibrate/', views.calibration, name='calibration'),
     url(r'^calibration_page/', views.calibration_page)
     #url(r'^calibration/', views.calibration, name='calibration'),
     #url(r'^test/', views.test, name='test'),

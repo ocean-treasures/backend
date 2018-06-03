@@ -6,57 +6,55 @@
 <head>
 
     <title> Motor calibration </title>
-    <link href="{%static " css
-    /style.css"%}" type="text/css" rel="stylesheet">
+    <link href="{%static "css/style.css"%}" type="text/css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
+        let calibrating = false;
+        let total_steps = 0;
+        function update_steps(){
+            $('#total_steps').val(total_steps)
+        }
+        function reset(){
+            calibrating = false;
+            $('#calibrating')[0].checked = false
+            total_steps = 0
+            $('#total_steps').val(0)
+            up(1000)
+        }
         function up(steps) {
             $.ajax({
                 url: '/game/move_up/'+steps,
                 async: false,
                 success: function () {
-                    console.log("Done:", arguments)
+                    if (calibrating){
+                        total_steps -= steps;
+                        update_steps()
+                    }
                 }
             });
         }
-
         function down(steps) {
             $.ajax({
                 url: '/game/move_down/'+steps,
                 async: false,
                 success: function () {
-                    console.log("Done:", arguments)
+                    if (calibrating){
+                        total_steps += steps;
+                        update_steps()
+                    }
                 }
             });
         }
-
-        function submit() {
-            if (confirm("Submit?") == true) {
-                const data = {
-                    lenght_going_up: $('#lenght_going_up').val(),
-                    lenght_going_down: $('#lenght_going_down').val(),
+        function submit(){
+            if(total_steps !== '' && calibrating){
+             $.post({
+                url: '/game/calibrate/',
+                data: JSON.stringify({'total_steps': total_steps}),
+                dataType: 'json',
+                success: function () {
+                    alert('Updated!')
                 }
-                $.ajax({
-                    method: 'POST',
-                    url: `/game/calibration/${duration}`,
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    success: function () {
-                        console.log('Updated:', arguments)
-                    }
-                })
-                $.ajax({
-                    method: 'POST',
-                    url: '/game/rope_lenght/',
-                    data: JSON.stringify({'rope_lenght': $('#rope_lenght').val()}),
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    success: function () {
-                        console.log('Updated:', arguments)
-                        window.alert("You submitted successfully!")
-                    }
-                })
+            })
             }
         }
     </script>
@@ -71,38 +69,39 @@
     </header>
     <div class="content">
         <div class="content-wrap">
-            <div class="field-box disabled">
-                <label>Up</label>
-                <button class="btn" onclick="up(1);">1</button>
-                <button class="btn" onclick="up(5);">5</button>
-                <button class="btn" onclick="up(10);">10</button>
-            </div>
-            <div class="field-box disabled">
-                <label>Down</label>
-                <button class="btn" onclick="down(1);">1</button>
-                <button class="btn" onclick="down(5);">5</button>
-                <button class="btn" onclick="down(10);">10</button>
-            </div>
-            <div class="field-box disabled">
-                <button class="btn" onclick="submit();" id="submit">Submit</button>
-                <br/>
-                <label for="rope_lenght" id="fullLength">Full distance </label>
-                <input type="number" name="rope_lenght" id="rope_lenght">
-            </div>
+            <p>
+                Use the following steps to calibrate your motor!
+            </p>
+            <br/>
+            <p>
+                Go to upper position <button class="btn" onclick="reset()">Reset</button>
+            </p>
+            <br/>
+            <p>
+                <input type="checkbox" id="calibrating" name="calibrating" onclick="calibrating = this.checked"/><label for="calibrating" class="unselectable">Mark when you are ready to calibrate</label>
+            </p>
+            <br/>
+            <p>
+                    <span>Go Down as many steps as you need:</span>
+                    <button class="btn" onclick="down(1);">1</button>
+                    <button class="btn" onclick="down(5);">5</button>
+                    <button class="btn" onclick="down(10);">10</button>
+            </p>
+            <br/>
+            <p>
+                    <span>To many steps? Go back Up a few:</span>
+                    <button class="btn" onclick="up(1);">1</button>
+                    <button class="btn" onclick="up(5);">5</button>
+                    <button class="btn" onclick="up(10);">10</button>
+            </p>
+            <br/>
+            <p>
+                <span>Total steps so far: </span><input type="text" id="total_steps" onchange="total_steps = this.value"/>
+            </p>
+            <br/>
+            <button style="margin-left: 10px" class="btn" onclick="submit()">Save</button>
         </div>
     </div>
-    <p>
-        If you have assambled the device you can calibrate.</b>
-        Callibrating the device:</br>
-        Click “Down” button and wait until the device is running. </br>
-        Measure the unfolded length (in cm) and type the number inside the field "Distance" under "Down"
-        button. </br></br>
-        Click “Up” button and wait until the device is running.</br>
-        Measure the length of the rope that has folded (in cm) and type the number in the field “Distance” under "Up"
-        button.</br></br>
-        Type the distance you want to be travelled (in cm) in the field "Full distance"</br></br>
-        If a box pop up with text "You submitted successfully!" callibration is ready!</br>
-    </p>
 </div>
 
 </body>
