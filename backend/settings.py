@@ -112,7 +112,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.sep.join([BASE_DIR,'static'])
+STATIC_ROOT = os.sep.join([BASE_DIR, 'static'])
 
 LOGGING = {
     'version': 1,

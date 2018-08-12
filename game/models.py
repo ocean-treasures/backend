@@ -36,5 +36,12 @@ class Game(models.Model):
     #             self.guessed_words.remove(word.id)
     #     super(Game, self).save(*args, **kwargs)
 
+    def reset(self):
+        """
+        Return game to initial state
+        :return:
+        """
+        self.guessed_words.clear()
+
     def number_of_pictures(self):
         return self.words.count()
